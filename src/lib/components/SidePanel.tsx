@@ -64,7 +64,6 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
       ? `${height}px !important`
       : `${height} !important`;
 
-
   useEffect(() => {
     // reset stack when side panel is unmounting
     return () => {
@@ -90,7 +89,10 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
       <>
         <CollapseButton onClick={toggleCollapse} collapsed={collapsed} />
         {modal && <Backdrop onClick={onClickOutside} />}
-        <Wrapper$ className={collapsed ? `collapsed` : undefined} ref={containerRef}>
+        <Wrapper$
+          className={collapsed ? `collapsed` : undefined}
+          ref={containerRef}
+        >
           <TransitionGroup
             className={
               direction > 0 ? 'right' : direction < 0 ? 'left' : undefined
@@ -179,11 +181,12 @@ const Wrapper$ = styled.div`
     height: 100%;
     background: #fff;
     display: flex;
+    flex-direction: column;
     opacity: 1;
     transition: opacity 300ms;
   }
 
-  &.collapsed .panel-page{
+  &.collapsed .panel-page {
     opacity: 0;
   }
 
