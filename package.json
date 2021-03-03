@@ -20,6 +20,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "rimraf dist && tsc -p tsconfig.lib.json",
+    "preversion": "npm run build",
+    "prepublishOnly": "npm run build",
+    "postpublish": "git push --tags",
     "build-demo": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
