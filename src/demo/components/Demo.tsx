@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useCallback} from 'react';
+import React, { FunctionComponent, useCallback } from "react";
 import styled from 'styled-components';
 import {SidePanel, useSidePanel} from '../../lib';
 import PageA from './PageA';

@@ -1,4 +1,4 @@
-import React, {FunctionComponent} from 'react';
+import React, { FunctionComponent, useEffect } from "react";
 import {useSidePanelItem,} from '../../lib';
 
 interface Props {
@@ -7,10 +7,10 @@ interface Props {
 const PageB: FunctionComponent<Props> = () => {
   const {pop} = useSidePanelItem({
     onBeforeExit: (event) => {
-      event.preventDefault();
-      setTimeout(() => {
-        pop(true);
-      }, 2000);
+      // event.preventDefault();
+      // setTimeout(() => {
+      //   pop(true);
+      // }, 2000);
     }
   });
   return <div>
