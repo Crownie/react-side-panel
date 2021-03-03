@@ -1,7 +1,7 @@
 {
   "name": "react-side-panel",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "main": "dist/lib/index.js",
   "types": "dist/lib/index.d.ts",
   "module": "dist/lib/index.js",
