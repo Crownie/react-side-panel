@@ -1,45 +1,34 @@
-import React, {FunctionComponent, useCallback, useContext, useRef, useState} from 'react';
+import React, {
+  FunctionComponent,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {SidePanelItem, SidePanelStack} from '../SidePanelStack';
 import {ExitEvent} from '../ExitEvent';
+import {SidePanelActionsContext} from './context/SidePanelActionsContext';
+import {SidePanelStateContext} from './context/SidePanelStateContext';
 
 export interface PanelPageEvents {
   onBeforeExit: (event: ExitEvent) => void;
 }
 
-export interface SidePanelContextProps {
-  push: (item: SidePanelItem) => void;
-  pop: (force?: boolean) => void;
-  popTo: (id: string, force?: boolean) => void;
-  reset: (force?: boolean) => void;
-  getItems: () => SidePanelItem[];
-  resetTo: (item: SidePanelItem, force?: boolean) => void;
-  item: SidePanelItem;
-  direction: -1 | 0 | 1;
-  collapse: (flag: boolean) => void;
-  toggleCollapse: () => void;
-  collapsed: boolean;
-  ref: React.RefObject<PanelPageEvents>;
-}
+interface SidePanelProviderProps {}
 
-const SidePanelContext = React.createContext<SidePanelContextProps>({} as any);
-
-interface SidePanelProviderProps {
-
-}
-
-const uid = () => new Date().getTime() + '' + Math.random();
-
-export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({children}) => {
-
-  const [, forceRender] = useState<string>();
-  const stack = useRef(new SidePanelStack()).current;
+export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
+  children,
+}) => {
+  const [, forceRender] = useState<Object>();
+  const stackRef = useRef(new SidePanelStack());
   const previousLengthRef = useRef<number>(0);
   const directionRef = useRef<-1 | 0 | 1>(1);
   const [collapsed, setCollapsed] = useState(true);
   const ref = useRef<PanelPageEvents>(null);
 
   const toggleCollapse = useCallback(() => {
-    setCollapsed((prev) => !prev)
+    setCollapsed((prev) => !prev);
   }, []);
 
   const collapse = useCallback((flag: boolean) => {
@@ -57,77 +46,117 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({ch
     previousLengthRef.current = len;
   }, []);
 
-  const push = useCallback((item: SidePanelItem) => {
-    stack.push(item);
-    calculateDirection(stack.length);
-    setCollapsed(false);
-    forceRender(new Date().getTime() + '' + Math.random());
-  }, [stack, calculateDirection]);
-
-  const pop = useCallback((force?: boolean) => {
-    const event = new ExitEvent();
-    if(!force){
-      ref.current?.onBeforeExit(event);
-    }
-    if (force || !event.isDefaultPrevented()) {
-      stack.pop();
-      calculateDirection(stack.length);
+  const push = useCallback(
+    (item: SidePanelItem) => {
+      stackRef.current.push(item);
+      calculateDirection(stackRef.current.length);
       setCollapsed(false);
-      forceRender(uid());
-    }
-  }, [stack, calculateDirection]);
+      forceRender({});
+    },
+    [calculateDirection],
+  );
+
+  const pop = useCallback(
+    (force?: boolean) => {
+      const event = new ExitEvent();
+      if (!force) {
+        ref.current?.onBeforeExit(event);
+      }
+      if (force || !event.isDefaultPrevented()) {
+        stackRef.current.pop();
+        calculateDirection(stackRef.current.length);
+        setCollapsed(false);
+        forceRender({});
+      }
+    },
+    [calculateDirection],
+  );
 
   const popTo = useCallback((id: string, force?: boolean) => {
     const event = new ExitEvent();
-    if(!force){
+    if (!force) {
       ref.current?.onBeforeExit(event);
     }
     if (force || !event.isDefaultPrevented()) {
-      stack.popTo(id);
+      stackRef.current.popTo(id);
       setCollapsed(false);
-      forceRender(uid());
+      forceRender({});
     }
-  }, [stack]);
+  }, []);
 
-  const reset = useCallback((force?: boolean) => {
-    const event = new ExitEvent();
-    if(!force){
-      ref.current?.onBeforeExit(event);
-    }
-    stack.reset();
-    if (force || !event.isDefaultPrevented()) {
-      calculateDirection(stack.length);
-      setCollapsed(false);
-      forceRender(uid());
-    }
-  }, [stack, calculateDirection]);
+  const reset = useCallback(
+    (force?: boolean) => {
+      const event = new ExitEvent();
+      if (!force) {
+        ref.current?.onBeforeExit(event);
+      }
+      stackRef.current.reset();
+      if (force || !event.isDefaultPrevented()) {
+        calculateDirection(stackRef.current.length);
+        setCollapsed(false);
+        forceRender({});
+      }
+    },
+    [calculateDirection],
+  );
 
   const getItems = useCallback(() => {
-    return stack.getItems();
-  }, [stack]);
+    return stackRef.current.getItems();
+  }, []);
 
-  const resetTo = useCallback((item: SidePanelItem, force?: boolean) => {
-    const event = new ExitEvent();
-    if(!force){
-      ref.current?.onBeforeExit(event);
-    }
-    stack.reset(item);
-    if (force || !event.isDefaultPrevented()) {
-      calculateDirection(stack.length);
-      setCollapsed(false);
-      forceRender(uid());
-    }
-  }, [stack, calculateDirection]);
+  const resetTo = useCallback(
+    (item: SidePanelItem, force?: boolean) => {
+      const event = new ExitEvent();
+      if (!force) {
+        ref.current?.onBeforeExit(event);
+      }
+      stackRef.current.reset(item);
+      if (force || !event.isDefaultPrevented()) {
+        calculateDirection(stackRef.current.length);
+        setCollapsed(false);
+        forceRender({});
+      }
+    },
+    [calculateDirection],
+  );
+
+  const actions = useMemo(
+    () => ({
+      push,
+      pop,
+      popTo,
+      reset,
+      resetTo,
+      getItems,
+      collapse,
+      toggleCollapse,
+      ref
+    }),
+    [collapse, getItems, pop, popTo, push, reset, resetTo, toggleCollapse,ref],
+  );
 
   const direction = directionRef.current;
 
-  const item = stack.top() || {};
-  return <SidePanelContext.Provider
-    value={{push, pop, popTo, reset, resetTo, getItems, item, direction, collapse, collapsed, toggleCollapse, ref}}>
-    {children}
-  </SidePanelContext.Provider>;
+  const item = stackRef.current.top() || {};
+  return (
+    <SidePanelStateContext.Provider
+      value={{
+        item,
+        direction,
+        collapsed,
+      }}
+    >
+      <SidePanelActionsContext.Provider value={actions}>
+        {children}
+      </SidePanelActionsContext.Provider>
+    </SidePanelStateContext.Provider>
+  );
 };
 
 export const useSidePanel = () => {
-  return useContext(SidePanelContext)
+  return useContext(SidePanelActionsContext);
 };
+
+export const useSidePanelState = ()=>{
+  return useContext(SidePanelStateContext)
+}
