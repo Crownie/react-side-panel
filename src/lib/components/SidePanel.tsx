@@ -90,7 +90,7 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
       <>
         <CollapseButton onClick={toggleCollapse} collapsed={collapsed} />
         {modal && <Backdrop onClick={onClickOutside} />}
-        <Wrapper$ ref={containerRef}>
+        <Wrapper$ className={collapsed ? `collapsed` : undefined} ref={containerRef}>
           <TransitionGroup
             className={
               direction > 0 ? 'right' : direction < 0 ? 'left' : undefined
@@ -101,8 +101,8 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
               classNames="fade"
               timeout={{
                 appear: 500,
-                enter: 3000,
-                exit: 5000,
+                enter: 300,
+                exit: 500,
               }}
               nodeRef={ref}
             >
@@ -128,7 +128,8 @@ const ResizableBox$ = styled<
   height: ${({height}) => height};
   background: #fff;
   box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
-  transition: width 300ms;
+  transform: translateX(0);
+  transition: width 300ms, transform 300ms;
   z-index: ${({zIndex}) => zIndex};
 
   .react-draggable-transparent-selection & {
@@ -152,6 +153,7 @@ const ResizableBox$ = styled<
 
   &.collapsed {
     width: 0 !important;
+    transform: translateX(100%);
   }
 `;
 
@@ -177,6 +179,12 @@ const Wrapper$ = styled.div`
     height: 100%;
     background: #fff;
     display: flex;
+    opacity: 1;
+    transition: opacity 300ms;
+  }
+
+  &.collapsed .panel-page{
+    opacity: 0;
   }
 
   .fade-enter {
