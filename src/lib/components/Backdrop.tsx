@@ -2,28 +2,35 @@ import React, {FunctionComponent} from 'react';
 import styled from 'styled-components';
 
 interface Props {
-  onClick:()=>void;
+  color?: string;
+  onClick: () => void;
 }
 
-const Backdrop: FunctionComponent<Props> = ({onClick}) => {
-  return <>
-    <BackdropRight$>
-      <rect onClick={onClick}/>
-    </BackdropRight$>
-    <BackdropLeft$>
-      <rect onClick={onClick}/>
-    </BackdropLeft$>
-    <BackdropTop$>
-      <rect onClick={onClick}/>
-    </BackdropTop$>
-    <BackdropTopR$>
-      <rect onClick={onClick}/>
-    </BackdropTopR$>
-    <BackdropBottom$>
-      <rect onClick={onClick}/>
-    </BackdropBottom$></>;
+const Backdrop: FunctionComponent<Props> = ({
+  onClick,
+  color = 'rgba(0,0,0,0.02)',
+}) => {
+  return (
+    <>
+      <BackdropRight$ color={color}>
+        <rect onClick={onClick} />
+      </BackdropRight$>
+      <BackdropLeft$ color={color}>
+        <rect onClick={onClick} />
+      </BackdropLeft$>
+      <BackdropTop$ color={color}>
+        <rect onClick={onClick} />
+      </BackdropTop$>
+      <BackdropTopR$ color={color}>
+        <rect onClick={onClick} />
+      </BackdropTopR$>
+      <BackdropBottom$ color={color}>
+        <rect onClick={onClick} />
+      </BackdropBottom$>
+    </>
+  );
 };
-const opacity = 0.2;
+
 const BackdropTop$ = styled.svg`
   position: absolute;
   top: -100vh;
@@ -32,7 +39,7 @@ const BackdropTop$ = styled.svg`
   width: 100vw;
 
   rect {
-    fill: rgba(0, 0, 0, ${opacity});
+    fill: ${({color})=>color};
     height: 100vh;
     width: 100vw;
   }
@@ -45,7 +52,7 @@ const BackdropTopR$ = styled.svg`
   overflow: visible;
 
   rect {
-    fill: rgba(0, 0, 0, ${opacity});
+    fill: ${({color})=>color};
     height: 100vh;
     width: 100vw;
   }
@@ -59,7 +66,7 @@ const BackdropBottom$ = styled.svg`
   width: 100%;
 
   rect {
-    fill: rgba(0, 0, 0, ${opacity});
+    fill: ${({color})=>color};
     height: 100vh;
     width: 100%;
   }
@@ -73,7 +80,7 @@ const BackdropLeft$ = styled.svg`
   width: 100vw;
 
   rect {
-    fill: rgba(0, 0, 0, ${opacity});
+    fill: ${({color})=>color};
     height: 200vh;
     width: 100vw;
   }
@@ -87,7 +94,7 @@ const BackdropRight$ = styled.svg`
   width: 1px;
 
   rect {
-    fill: rgba(0, 0, 0, ${opacity});
+    fill: ${({color})=>color};
     height: 200vh;
     width: 200vw;
   }
