@@ -131,7 +131,7 @@ const ResizableBox$ = styled<
   right: 0;
   height: ${({height}) => height};
   background: #fff;
-  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 5px 10px rgba(0, 0, 0, 0.2);
   transform: translateX(0);
   transition: width 300ms, transform 300ms;
   z-index: ${({zIndex}) => zIndex};
