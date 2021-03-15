@@ -38,6 +38,7 @@ interface SidePanelProps {
   maxWidth?: number;
   height?: string | number;
   zIndex?: number;
+  backdropColor?: string;
 }
 
 export const SidePanel: FunctionComponent<SidePanelProps> = ({
@@ -46,6 +47,7 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
   minWidth = 350,
   maxWidth = 700,
   zIndex = 99999,
+  backdropColor,
   children,
 }) => {
   const {reset, pop, toggleCollapse} = useSidePanel();
@@ -88,7 +90,7 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
     >
       <>
         <CollapseButton onClick={toggleCollapse} collapsed={collapsed} />
-        {modal && <Backdrop onClick={onClickOutside} />}
+        {modal && <Backdrop onClick={onClickOutside} color={backdropColor} />}
         <Wrapper$
           className={collapsed ? `collapsed` : undefined}
           ref={containerRef}
