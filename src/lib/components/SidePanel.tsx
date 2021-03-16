@@ -18,6 +18,25 @@ import styled from 'styled-components';
 import {ResizableBox, ResizableBoxProps} from 'react-resizable';
 import CollapseButton from './CollapseButton';
 
+const PANEL_WIDTH_STORAGE_KEY = 'side_panel_width';
+
+const supportsLocalStorage =
+  'localStorage' in window && window['localStorage'] !== null;
+
+const saveSidePanelWidth = (width: number) => {
+  if (supportsLocalStorage) {
+    localStorage.setItem(PANEL_WIDTH_STORAGE_KEY, width.toString());
+  }
+};
+
+const getSavedSidePanelWidth = () => {
+  if (!supportsLocalStorage) {
+    return undefined;
+  }
+  const val = localStorage.getItem(PANEL_WIDTH_STORAGE_KEY);
+  return val ? parseInt(val) : undefined;
+};
+
 export const useSidePanelItem = (listeners: PanelPageEvents | null) => {
   const {onBeforeExit} = listeners || {};
   const context = useSidePanel();
@@ -80,13 +99,16 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
   return (
     <ResizableBox$
       className={collapsed ? `${className} collapsed` : className}
-      width={minWidth}
+      width={getSavedSidePanelWidth() || minWidth}
       height={height}
       axis={'x'}
       minConstraints={[minWidth, Infinity]}
       maxConstraints={[maxWidth, Infinity]}
       resizeHandles={['w']}
       zIndex={zIndex}
+      onResize={(e, data) => {
+        saveSidePanelWidth(data.size.width);
+      }}
     >
       <>
         <CollapseButton onClick={toggleCollapse} collapsed={collapsed} />

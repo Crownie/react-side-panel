@@ -1,11 +1,11 @@
 import React, {
   FunctionComponent,
   useCallback,
-  useContext,
+  useContext, useEffect,
   useMemo,
   useRef,
-  useState,
-} from 'react';
+  useState
+} from "react";
 import {SidePanelItem, SidePanelStack} from '../SidePanelStack';
 import {ExitEvent} from '../ExitEvent';
 import {SidePanelActionsContext} from './context/SidePanelActionsContext';
@@ -14,6 +14,25 @@ import {SidePanelStateContext} from './context/SidePanelStateContext';
 export interface PanelPageEvents {
   onBeforeExit: (event: ExitEvent) => void;
 }
+const PANEL_COLLAPSED_STORAGE_KEY='side_panel_collapsed';
+
+const supportsLocalStorage = 'localStorage' in window && window['localStorage'] !== null;
+const saveCollapseState = (collapsed:boolean)=>{
+  if(supportsLocalStorage){
+    if(collapsed){
+      localStorage.setItem(PANEL_COLLAPSED_STORAGE_KEY,'1');
+    }else{
+      localStorage.removeItem(PANEL_COLLAPSED_STORAGE_KEY);
+    }
+  }
+}
+
+const getSavedCollapseState = () =>{
+  if(!supportsLocalStorage){
+    return false;
+  }
+  return localStorage.getItem(PANEL_COLLAPSED_STORAGE_KEY)==='1';
+};
 
 interface SidePanelProviderProps {}
 
@@ -24,7 +43,7 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   const stackRef = useRef(new SidePanelStack());
   const previousLengthRef = useRef<number>(0);
   const directionRef = useRef<-1 | 0 | 1>(1);
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(getSavedCollapseState());
   const ref = useRef<PanelPageEvents>(null);
 
   const toggleCollapse = useCallback(() => {
@@ -34,6 +53,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   const collapse = useCallback((flag: boolean) => {
     setCollapsed(flag);
   }, []);
+
+  useEffect(()=>{
+    saveCollapseState(collapsed);
+  },[collapsed]);
 
   const calculateDirection = useCallback((len: number) => {
     if (len > previousLengthRef.current) {
