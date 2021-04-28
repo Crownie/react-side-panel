@@ -58,10 +58,6 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     saveCollapseState(collapsed);
   },[collapsed]);
 
-  const clearListeners = useCallback(() => {
-      ref.current = null;
-  }, []);
-
   const calculateDirection = useCallback((len: number) => {
     if (len > previousLengthRef.current) {
       directionRef.current = 1;
@@ -73,24 +69,27 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     previousLengthRef.current = len;
   }, []);
 
+  const commit = useCallback(() => {
+    ref.current = null;
+    calculateDirection(stackRef.current.length);
+    setCollapsed(false);
+    forceRender({});
+  }, [calculateDirection]);
+
   const push = useCallback(
     (item: SidePanelItem) => {
       stackRef.current.push(item);
-      calculateDirection(stackRef.current.length);
-      setCollapsed(false);
-      forceRender({});
+      commit();
     },
-    [calculateDirection],
+    [commit],
   );
 
   const replace = useCallback(
     (item: SidePanelItem) => {
       stackRef.current.replace(item);
-      calculateDirection(stackRef.current.length);
-      setCollapsed(false);
-      forceRender({});
+      commit();
     },
-    [calculateDirection],
+    [commit],
   );
 
   const pop = useCallback(
@@ -101,13 +100,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.pop();
-        clearListeners();
-        calculateDirection(stackRef.current.length);
-        setCollapsed(false);
-        forceRender({});
+        commit();
       }
     },
-    [calculateDirection, clearListeners],
+    [commit],
   );
 
   const popTo = useCallback((id: string, force?: boolean) => {
@@ -117,11 +113,9 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     }
     if (force || !event.isDefaultPrevented()) {
       stackRef.current.popTo(id);
-      clearListeners();
-      setCollapsed(false);
-      forceRender({});
+      commit();
     }
-  }, [clearListeners]);
+  }, [commit]);
 
   const reset = useCallback(
     (force?: boolean) => {
@@ -131,13 +125,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.reset();
-        clearListeners();
-        calculateDirection(stackRef.current.length);
-        setCollapsed(false);
-        forceRender({});
+        commit();
       }
     },
-    [calculateDirection, clearListeners],
+    [commit],
   );
 
   const getItems = useCallback(() => {
@@ -150,8 +141,8 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       if (!force) {
         ref.current?.onBeforeExit(event);
       }
-      stackRef.current.reset(item);
       if (force || !event.isDefaultPrevented()) {
+        stackRef.current.reset(item);
         calculateDirection(stackRef.current.length);
         setCollapsed(false);
         forceRender({});
