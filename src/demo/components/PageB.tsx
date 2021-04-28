@@ -7,6 +7,7 @@ interface Props {
 const PageB: FunctionComponent<Props> = () => {
   const {pop} = useSidePanelItem({
     onBeforeExit: (event) => {
+      console.log('On Page B Exit');
       // event.preventDefault();
       // setTimeout(() => {
       //   pop(true);
