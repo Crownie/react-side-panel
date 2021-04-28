@@ -58,6 +58,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     saveCollapseState(collapsed);
   },[collapsed]);
 
+  const clearListeners = useCallback(() => {
+      ref.current = null;
+  }, []);
+
   const calculateDirection = useCallback((len: number) => {
     if (len > previousLengthRef.current) {
       directionRef.current = 1;
@@ -79,21 +83,31 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     [calculateDirection],
   );
 
+  const replace = useCallback(
+    (item: SidePanelItem) => {
+      stackRef.current.replace(item);
+      calculateDirection(stackRef.current.length);
+      setCollapsed(false);
+      forceRender({});
+    },
+    [calculateDirection],
+  );
+
   const pop = useCallback(
     (force?: boolean) => {
       const event = new ExitEvent();
       if (!force) {
-        console.log(ref.current);
         ref.current?.onBeforeExit(event);
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.pop();
+        clearListeners();
         calculateDirection(stackRef.current.length);
         setCollapsed(false);
         forceRender({});
       }
     },
-    [calculateDirection],
+    [calculateDirection, clearListeners],
   );
 
   const popTo = useCallback((id: string, force?: boolean) => {
@@ -103,10 +117,11 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     }
     if (force || !event.isDefaultPrevented()) {
       stackRef.current.popTo(id);
+      clearListeners();
       setCollapsed(false);
       forceRender({});
     }
-  }, []);
+  }, [clearListeners]);
 
   const reset = useCallback(
     (force?: boolean) => {
@@ -114,14 +129,15 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       if (!force) {
         ref.current?.onBeforeExit(event);
       }
-      stackRef.current.reset();
       if (force || !event.isDefaultPrevented()) {
+        stackRef.current.reset();
+        clearListeners();
         calculateDirection(stackRef.current.length);
         setCollapsed(false);
         forceRender({});
       }
     },
-    [calculateDirection],
+    [calculateDirection, clearListeners],
   );
 
   const getItems = useCallback(() => {
@@ -151,12 +167,13 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       popTo,
       reset,
       resetTo,
+      replace,
       getItems,
       collapse,
       toggleCollapse,
       ref
     }),
-    [collapse, getItems, pop, popTo, push, reset, resetTo, toggleCollapse,ref],
+    [push, pop, popTo, reset, resetTo, replace, getItems, collapse, toggleCollapse],
   );
 
   const direction = directionRef.current;
