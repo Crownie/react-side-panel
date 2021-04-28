@@ -11,6 +11,6 @@ export interface SidePanelActionsContextProps{
   resetTo: (item: SidePanelItem, force?: boolean) => void;
   collapse: (flag: boolean) => void;
   toggleCollapse: () => void;
-  ref: React.RefObject<PanelPageEvents>;
+  ref: React.RefObject<PanelPageEvents|null>;
 }
 export const SidePanelActionsContext = React.createContext<SidePanelActionsContextProps>({} as any);

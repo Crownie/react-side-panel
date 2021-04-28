@@ -44,7 +44,7 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   const previousLengthRef = useRef<number>(0);
   const directionRef = useRef<-1 | 0 | 1>(1);
   const [collapsed, setCollapsed] = useState(getSavedCollapseState());
-  const ref = useRef<PanelPageEvents>(null);
+  const ref = useRef<PanelPageEvents|null>(null);
 
   const toggleCollapse = useCallback(() => {
     setCollapsed((prev) => !prev);
@@ -83,6 +83,7 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     (force?: boolean) => {
       const event = new ExitEvent();
       if (!force) {
+        console.log(ref.current);
         ref.current?.onBeforeExit(event);
       }
       if (force || !event.isDefaultPrevented()) {
