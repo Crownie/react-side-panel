@@ -3,7 +3,6 @@ import React, {
   FunctionComponent,
   useCallback,
   useEffect,
-  useImperativeHandle,
   useMemo,
   useRef,
 } from 'react';
@@ -38,16 +37,10 @@ const getSavedSidePanelWidth = () => {
 };
 
 export const useSidePanelItem = (listeners: PanelPageEvents | null) => {
-  const {onBeforeExit} = listeners || {};
   const context = useSidePanel();
-  const dummyRef = useRef<any>(null);
-  useImperativeHandle(
-    onBeforeExit ? context.ref : dummyRef,
-    () => {
-      return {onBeforeExit};
-    },
-    [onBeforeExit],
-  );
+  // set listeners for the current panel
+  // @ts-ignore
+  context.ref['current'] = listeners || null;
   return context;
 };
 
@@ -131,6 +124,7 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
                 exit: 500,
               }}
               nodeRef={ref}
+              unmountOnExit={false}
             >
               <div id={key} className="panel-page" ref={ref} key={key}>
                 {node || children}
