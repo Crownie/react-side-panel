@@ -38,9 +38,11 @@ const getSavedSidePanelWidth = () => {
 
 export const useSidePanelItem = (listeners: PanelPageEvents | null) => {
   const context = useSidePanel();
-  // set listeners for the current panel
-  // @ts-ignore
-  context.ref['current'] = listeners || null;
+  if (context.ref) {
+    // set listeners for the current panel
+    // @ts-ignore
+    context.ref['current'] = listeners || null;
+  }
   return context;
 };
 
