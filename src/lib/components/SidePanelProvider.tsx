@@ -101,7 +101,9 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.pop();
         commit();
+        return true;
       }
+      return false;
     },
     [commit],
   );
@@ -114,7 +116,9 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     if (force || !event.isDefaultPrevented()) {
       stackRef.current.popTo(id);
       commit();
+      return true;
     }
+    return false;
   }, [commit]);
 
   const reset = useCallback(
@@ -126,7 +130,9 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.reset();
         commit();
+        return true;
       }
+      return false;
     },
     [commit],
   );
@@ -146,7 +152,9 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
         calculateDirection(stackRef.current.length);
         setCollapsed(false);
         forceRender({});
+        return true;
       }
+      return false;
     },
     [calculateDirection],
   );
