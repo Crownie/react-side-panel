@@ -12,7 +12,7 @@ import {SidePanelActionsContext} from './context/SidePanelActionsContext';
 import {SidePanelStateContext} from './context/SidePanelStateContext';
 
 export interface PanelPageEvents {
-  onBeforeExit: (event: ExitEvent) => void;
+  onBeforeExit: (event: ExitEvent) => Promise<void>;
 }
 const PANEL_COLLAPSED_STORAGE_KEY='side_panel_collapsed';
 
@@ -93,10 +93,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   );
 
   const pop = useCallback(
-    (force?: boolean) => {
+    async (force?: boolean) => {
       const event = new ExitEvent();
       if (!force) {
-        ref.current?.onBeforeExit(event);
+        await ref.current?.onBeforeExit(event);
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.pop();
@@ -108,10 +108,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
     [commit],
   );
 
-  const popTo = useCallback((id: string, force?: boolean) => {
+  const popTo = useCallback(async (id: string, force?: boolean) => {
     const event = new ExitEvent();
     if (!force) {
-      ref.current?.onBeforeExit(event);
+      await ref.current?.onBeforeExit(event);
     }
     if (force || !event.isDefaultPrevented()) {
       stackRef.current.popTo(id);
@@ -122,10 +122,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   }, [commit]);
 
   const reset = useCallback(
-    (force?: boolean) => {
+    async (force?: boolean) => {
       const event = new ExitEvent();
       if (!force) {
-        ref.current?.onBeforeExit(event);
+        await ref.current?.onBeforeExit(event);
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.reset();
@@ -142,10 +142,10 @@ export const SidePanelProvider: FunctionComponent<SidePanelProviderProps> = ({
   }, []);
 
   const resetTo = useCallback(
-    (item: SidePanelItem, force?: boolean) => {
+    async (item: SidePanelItem, force?: boolean) => {
       const event = new ExitEvent();
       if (!force) {
-        ref.current?.onBeforeExit(event);
+        await ref.current?.onBeforeExit(event);
       }
       if (force || !event.isDefaultPrevented()) {
         stackRef.current.reset(item);
