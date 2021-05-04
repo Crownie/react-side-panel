@@ -12,7 +12,7 @@ import {SidePanelActionsContext} from './context/SidePanelActionsContext';
 import {SidePanelStateContext} from './context/SidePanelStateContext';
 
 export interface PanelPageEvents {
-  onBeforeExit: (event: ExitEvent) => Promise<void>;
+  onBeforeExit: (event: ExitEvent) => Promise<void>|void;
 }
 const PANEL_COLLAPSED_STORAGE_KEY='side_panel_collapsed';
 
