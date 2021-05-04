@@ -190,6 +190,8 @@ const Wrapper$ = styled.div`
   height: 100%;
   background-color: #fff;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   .transition-group{
     position: relative;
