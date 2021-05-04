@@ -9,21 +9,25 @@ export interface SidePanelActionsContextProps{
    * @param item
    */
   replace: (item: SidePanelItem) => void;
-  pop: (force?: boolean) => void;
+  pop: (force?: boolean) => boolean;
   /**
-   * Pop stack until the specified panel id is reached
+   * Pop stack until the specified panel id is reached. Returns true if the action is successful
    * @param id
    * @param force
    */
-  popTo: (id: string, force?: boolean) => void;
-  reset: (force?: boolean) => void;
+  popTo: (id: string, force?: boolean) => boolean;
+  /**
+   * Clears the stack to show only the default component. Returns true if the action is successful
+   * @param force
+   */
+  reset: (force?: boolean) => boolean;
   getItems: () => SidePanelItem[];
   /**
-   * clear entire stack and push the specified panel
+   * clear entire stack and push the specified panel. Returns true if the action is successful
    * @param item
    * @param force
    */
-  resetTo: (item: SidePanelItem, force?: boolean) => void;
+  resetTo: (item: SidePanelItem, force?: boolean) => boolean;
   collapse: (flag: boolean) => void;
   toggleCollapse: () => void;
   ref: React.RefObject<PanelPageEvents|null>;
