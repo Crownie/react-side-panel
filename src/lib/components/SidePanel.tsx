@@ -1,11 +1,11 @@
 import React, {
   createRef,
-  FunctionComponent,
+  FunctionComponent, ReactNode,
   useCallback,
   useEffect,
   useMemo,
-  useRef,
-} from 'react';
+  useRef
+} from "react";
 import Backdrop from './Backdrop';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import {
@@ -53,6 +53,7 @@ interface SidePanelProps {
   height?: string | number;
   zIndex?: number;
   backdropColor?: string;
+  header?:ReactNode;
 }
 
 export const SidePanel: FunctionComponent<SidePanelProps> = ({
@@ -63,6 +64,7 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
   zIndex = 99999,
   backdropColor,
   children,
+  header
 }) => {
   const {reset, pop, toggleCollapse} = useSidePanel();
   const {item, direction, collapsed} = useSidePanelState();
@@ -112,9 +114,10 @@ export const SidePanel: FunctionComponent<SidePanelProps> = ({
           className={collapsed ? `collapsed` : undefined}
           ref={containerRef}
         >
+          {header}
           <TransitionGroup
             className={
-              direction > 0 ? 'right' : direction < 0 ? 'left' : undefined
+              direction > 0 ? 'transition-group right' : direction < 0 ? 'transition-group left' : 'transition-group'
             }
           >
             <CSSTransition
@@ -188,7 +191,8 @@ const Wrapper$ = styled.div`
   background-color: #fff;
   overflow: hidden;
 
-  > div {
+  .transition-group{
+    position: relative;
     height: 100%;
     width: 100%;
   }
