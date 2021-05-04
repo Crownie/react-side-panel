@@ -27,7 +27,7 @@ const Demo: FunctionComponent<Props> = () => {
         <button onClick={removePage}>Remove page</button>
         <button onClick={handleReset}>Reset</button>
       </Main$>
-      <SidePanel><De$>Default content</De$></SidePanel>
+      <SidePanel header={<header><h4>Header</h4></header>}><De$>Default content</De$></SidePanel>
     </Wrapper$>
   </div>;
 };
